@@ -7,7 +7,7 @@ function roundRect(
   height,
   radius = 8,
   fill = true,
-  stroke = true,
+  stroke = false,
 ) {
   if (typeof radius === 'number') {
     radius = {
