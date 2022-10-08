@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "vscode-icons-team.vscode-icons",
+    "zhuangtongfa.material-theme",
+    "usernamehw.errorlens",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "heybourn.headwind"
+  ]
+}

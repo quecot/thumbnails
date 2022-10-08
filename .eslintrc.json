@@ -1,0 +1,93 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "airbnb",
+      "plugin:react/recommended"
+    ],
+    "overrides": [
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaFeatures": {
+          "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "project": ["tsconfig.json"]
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "react"
+    ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        },
+        "alias": {
+          "map": [
+            [
+              "@assets",
+              "./assets"
+            ],
+            [
+              "@components",
+              "./src/components"
+            ],
+            [
+              "@views",
+              "./src/views"
+            ],
+            [
+              "@interfaces",
+              "./src/interfaces"
+            ],
+            [
+              "@utils",
+              "./src/utils"
+            ],
+            [
+              "@src",
+              "./src"
+            ]
+          ],
+          "extensions": [
+            ".ts", ".tsx"
+          ]
+        }
+      }
+    },
+    "rules": {
+      "import/no-extraneous-dependencies": ["error", {
+        "devDependencies": ["./*.ts", "./*.tsx"]
+    }],
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }
+      ],  
+      "max-len": ["error", {"code": 200}],
+      "react/function-component-definition": [
+        2,
+        {
+          "namedComponents": "arrow-function",
+          "unnamedComponents": "arrow-function"
+        }
+      ],
+      "radix": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-noninteractive-element-interactions": "off",
+      "no-nested-ternary": "off",
+      "no-underscore-dangle": "off"
+    }
+  }
+  

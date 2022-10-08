@@ -1,0 +1,43 @@
+{
+  "name": "thumbnails",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "yarn webpack serve",
+    "build": "yarn webpack",
+    "lint": "yarn eslint --ext .ts,.tsx ."
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.3",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "autoprefixer": "^10.4.12",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.25.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "html-webpack-plugin": "^5.5.0",
+    "postcss": "^8.4.17",
+    "postcss-loader": "^7.0.1",
+    "style-loader": "^3.3.1",
+    "tailwindcss": "^3.1.8",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
