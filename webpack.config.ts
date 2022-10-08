@@ -38,6 +38,12 @@ const configuration: Configuration = {
           },
         ],
       },
+      {
+        test: /\.(ttf|woff|woff2)$/,
+        use: {
+          loader: 'url-loader',
+        },
+      },
     ],
   },
   plugins: [

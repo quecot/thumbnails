@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { makeNoise2D } from 'fast-simplex-noise';
-
+import '@assets/css/index.css';
 import logoImg from '@assets/images/logo.png';
+import roundRect from './utils/round_rect';
 
 const addLogo = (context: CanvasRenderingContext2D) => {
   const logo = new Image();
@@ -44,6 +45,23 @@ const generateBackground = (context: CanvasRenderingContext2D, canvas: HTMLCanva
   context.filter = 'blur(0px)';
 };
 
+const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, canvas: HTMLCanvasElement) => {
+  if (!videoTitle) { return; }
+  const { width, height } = canvas;
+  context.fillStyle = 'white';
+  context.font = '72px tahoma';
+
+  const textWidth = context.measureText(videoTitle).width;
+
+  roundRect(context, (width / 2) - textWidth / 2 - 20, height / 2 - 72, textWidth + 40, 144);
+
+  context.fillStyle = 'black';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+
+  context.fillText(videoTitle, 1280 / 2, 720 / 2, 1280);
+};
+
 const generateImages = (videoTitle: string) => {
   const canvas = (document.querySelector('#canvas') as HTMLCanvasElement);
 
@@ -53,20 +71,13 @@ const generateImages = (videoTitle: string) => {
 
   context!.scale(0.5, 0.5);
   context!.translate(canvas.width / 2, canvas.height / 2);
-  context!.textAlign = 'center';
-  context!.textBaseline = 'top';
-
-  context!.font = context!.font.replace(/\d+px/, '48px');
-
   generateBackground(context!, canvas);
-
-  context!.fillStyle = 'black';
-  context!.fillText(videoTitle.toUpperCase(), 1280 / 2, 720 / 2);
-
+  writeTitle(context!, videoTitle, canvas);
   addLogo(context!);
 };
 
-const handleClick = (setImageGenerated: React.Dispatch<React.SetStateAction<boolean>>) => {
+const handleClick = (e: React.FormEvent, setImageGenerated: React.Dispatch<React.SetStateAction<boolean>>) => {
+  e.preventDefault();
   const videoTitle = (document.querySelector('#videoTitle') as HTMLInputElement).value;
   generateImages(videoTitle);
   setImageGenerated(true);
@@ -91,7 +102,7 @@ const App = () => {
   return (
     <div className="App">
       <div className="flex flex-col items-center justify-between w-screen h-screen pt-12 justify">
-        <div className="flex flex-col items-center gap-4">
+        <form className="flex flex-col items-center gap-4" onSubmit={(e) => handleClick(e, setImageGenerated)} autoComplete="off">
           <h1 className="text-2xl font-semibold">Generador d&apos;imatges de portada</h1>
           <input
             type="text"
@@ -102,15 +113,14 @@ const App = () => {
             placeholder="Títol del vídeo"
           />
           <button
-            type="button"
+            type="submit"
             id="submit"
-            onClick={() => handleClick(setImageGenerated)}
           // eslint-disable-next-line max-len
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
             Genera
           </button>
-        </div>
+        </form>
         <div className="flex flex-col">
           <canvas id="canvas" width="1280" height="720" />
           { imageGenerated ? <button type="button" className="mt-[-160px]" onClick={downloadImage}>Descarrega</button> : <div />}
