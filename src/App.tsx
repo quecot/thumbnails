@@ -90,7 +90,7 @@ const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, canva
 
   const { width, height } = canvas;
   context.fillStyle = 'white';
-  context.font = '72px tahoma';
+  context.font = '72px Tahoma, Verdana, Segoe, sans-serif';
 
   const reducedText = reduceTextWidth(videoTitle, context);
   const textHeight = 72 + 72 * (reducedText.match(/\n/g) || []).length;
