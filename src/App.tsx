@@ -52,7 +52,6 @@ const generateBackground = (
   const noise = makeNoise2D(() => seed);
   context.fillStyle = 'white';
 
-  context.filter = 'blur(1px)';
   const bgCols = 24;
   const bgRows = 12;
   for (let i = 0; i < bgCols; i += 1) {
@@ -65,7 +64,6 @@ const generateBackground = (
       context.fill();
     }
   }
-  context.filter = 'blur(0px)';
   return bgColor;
 };
 
