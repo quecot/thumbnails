@@ -20,11 +20,25 @@ const addLogo = (context: CanvasRenderingContext2D) => {
   };
 };
 
-const generateBackground = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement): string => {
+const generateBackground = (
+  context: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  currentColor: string,
+  setCurrentColor: React.Dispatch<React.SetStateAction<string>>,
+  currentSeed: number,
+  setCurrentSeed: React.Dispatch<React.SetStateAction<number>>,
+): string => {
   context.clearRect(0, 0, canvas.width, canvas.height);
   const linearGradient = context.createLinearGradient(0, 0, window.innerWidth, window.innerHeight);
 
-  const bgColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  const colorCheckbox = document.getElementById('keepColor') as HTMLInputElement;
+  const seedCheckbox = document.getElementById('keepSeed') as HTMLInputElement;
+  const keepColor = colorCheckbox ? colorCheckbox.checked : false;
+  const keepSeed = seedCheckbox ? seedCheckbox.checked : false;
+
+  const bgColor = keepColor ? currentColor : `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  console.log(keepColor);
+  setCurrentColor(bgColor);
   const compColor = hexComplimentary(bgColor);
 
   linearGradient.addColorStop(0, bgColor);
@@ -32,7 +46,10 @@ const generateBackground = (context: CanvasRenderingContext2D, canvas: HTMLCanva
 
   context.fillStyle = linearGradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
-  const noise = makeNoise2D();
+
+  const seed = keepSeed ? currentSeed : Math.random();
+  setCurrentSeed(seed);
+  const noise = makeNoise2D(() => seed);
   context.fillStyle = 'white';
 
   context.filter = 'blur(1px)';
@@ -98,30 +115,36 @@ const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, canva
   }
 };
 
-const generateImages = (videoTitle: string) => {
+const generateImages = (
+  videoTitle: string,
+  currentColor: string,
+  setCurrentColor: React.Dispatch<React.SetStateAction<string>>,
+  currentSeed: number,
+  setCurrentSeed: React.Dispatch<React.SetStateAction<number>>,
+) => {
   const canvas = (document.querySelector('#canvas') as HTMLCanvasElement);
 
   canvas.height = 720;
   canvas.width = 1280;
   const context = canvas.getContext('2d');
 
-  const color = generateBackground(context!, canvas);
+  const color = generateBackground(context!, canvas, currentColor, setCurrentColor, currentSeed, setCurrentSeed);
   writeTitle(context!, videoTitle, canvas, color);
   addLogo(context!);
 };
 
-const handleClick = (e: React.FormEvent, setImageGenerated: React.Dispatch<React.SetStateAction<boolean>>) => {
+const handleClick = (
+  e: React.FormEvent,
+  setImageGenerated: React.Dispatch<React.SetStateAction<boolean>>,
+  currentColor: string,
+  setCurrentColor: React.Dispatch<React.SetStateAction<string>>,
+  currentSeed: number,
+  setCurrentSeed: React.Dispatch<React.SetStateAction<number>>,
+) => {
   e.preventDefault();
   const videoTitle = (document.querySelector('#videoTitle') as HTMLInputElement).value;
-  generateImages(videoTitle);
+  generateImages(videoTitle, currentColor, setCurrentColor, currentSeed, setCurrentSeed);
   setImageGenerated(true);
-};
-
-const handleEnter = () => {
-  (document.querySelector('#videoTitle') as HTMLInputElement).addEventListener('keyup', (event) => {
-    if (event.key !== 'Enter') return;
-    (document.querySelector('#submit') as HTMLButtonElement).click();
-  });
 };
 
 const downloadImage = () => {
@@ -133,14 +156,16 @@ const downloadImage = () => {
 
 const App = () => {
   const [imageGenerated, setImageGenerated] = useState(false);
+  const [currentColor, setCurrentColor] = useState<string>('');
+  const [currentSeed, setCurrentSeed] = useState<number>(0);
+
   return (
     <div className="App">
       <div className="relative flex flex-col items-center justify-between w-screen h-screen pt-10 overflow-scroll justify">
-        <form className="flex flex-col items-center gap-4" onSubmit={(e) => handleClick(e, setImageGenerated)} autoComplete="off">
+        <form className="flex flex-col items-center gap-4" onSubmit={(e) => handleClick(e, setImageGenerated, currentColor, setCurrentColor, currentSeed, setCurrentSeed)} autoComplete="off">
           <h1 className="text-2xl font-semibold">Generador d&apos;imatges de portada</h1>
           <input
             type="text"
-            onKeyUp={handleEnter}
             id="videoTitle"
           // eslint-disable-next-line max-len
             className="w-96 caret-transparent bg-gray-50 border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
@@ -154,7 +179,32 @@ const App = () => {
           >
             Genera
           </button>
+          { imageGenerated ? (
+            <div className="flex flex-row gap-4">
+              <div>
+                <input
+                  id="keepColor"
+                  type="checkbox"
+                  value=""
+            // eslint-disable-next-line max-len
+                  className="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <span className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Conserva colors</span>
+              </div>
+              <div>
+                <input
+                  id="keepSeed"
+                  type="checkbox"
+                  value=""
+            // eslint-disable-next-line max-len
+                  className="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <span className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Conserva patró</span>
+              </div>
+            </div>
+          ) : <div />}
         </form>
+
         <div />
         <div className="flex flex-col items-center">
           <canvas id="canvas" className="w-[75%]" />
@@ -171,7 +221,6 @@ const App = () => {
             </div>
           ) : <div />}
         </div>
-        <div />
         <div />
       </div>
     </div>
