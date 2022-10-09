@@ -5,7 +5,7 @@ import 'webpack-dev-server';
 
 const configuration: Configuration = {
   entry: './src/main.tsx',
-  mode: 'development',
+  mode: 'production',
   resolve: {
     plugins: [
       new TsconfigPathsPlugin(),
