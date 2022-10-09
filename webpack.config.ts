@@ -49,6 +49,7 @@ const configuration: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './assets/html/index.html',
+      favicon: './assets/favicon.ico',
     }),
   ],
   devServer: {
