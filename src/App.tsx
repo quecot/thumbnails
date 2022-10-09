@@ -13,8 +13,8 @@ const addLogo = (context: CanvasRenderingContext2D) => {
     const logoWidth = logo.width * 0.5;
     const logoHeight = logo.height * 0.5;
 
-    const canvasWidth = context.canvas.clientWidth;
-    const canvasHeight = context.canvas.clientHeight;
+    const canvasWidth = context.canvas.width;
+    const canvasHeight = context.canvas.height;
 
     context.drawImage(logo, canvasWidth - logoWidth - 12, canvasHeight - logoHeight - 12, logoWidth, logoHeight);
   };
@@ -135,7 +135,7 @@ const App = () => {
   const [imageGenerated, setImageGenerated] = useState(false);
   return (
     <div className="App">
-      <div className="flex flex-col items-center justify-between w-screen h-screen pt-10 justify">
+      <div className="relative flex flex-col items-center justify-between w-screen h-screen pt-10 overflow-scroll justify">
         <form className="flex flex-col items-center gap-4" onSubmit={(e) => handleClick(e, setImageGenerated)} autoComplete="off">
           <h1 className="text-2xl font-semibold">Generador d&apos;imatges de portada</h1>
           <input
@@ -157,7 +157,7 @@ const App = () => {
         </form>
         <div />
         <div className="flex flex-col items-center">
-          <canvas id="canvas" width="1280" height="720" />
+          <canvas id="canvas" className="w-[75%]" />
           { imageGenerated ? (
             <div className="pt-2">
               <button
