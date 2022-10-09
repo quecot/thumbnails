@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { makeNoise2D } from 'fast-simplex-noise';
+import tinycolor2 from 'tinycolor2';
+
 import '@assets/css/index.css';
 import logoImg from '@assets/images/logo.png';
-import hexComplimentary from './utils/hex_complementary';
 import roundRect from './utils/round_rect';
 
 const addLogo = (context: CanvasRenderingContext2D) => {
@@ -36,10 +37,9 @@ const generateBackground = (
   const keepColor = colorCheckbox ? colorCheckbox.checked : false;
   const keepSeed = seedCheckbox ? seedCheckbox.checked : false;
 
-  const bgColor = keepColor ? currentColor : `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  console.log(keepColor);
+  const bgColor = keepColor ? currentColor : tinycolor2.random();
   setCurrentColor(bgColor);
-  const compColor = hexComplimentary(bgColor);
+  const compColor = tinycolor2(bgColor).complement().toHexString();
 
   linearGradient.addColorStop(0, bgColor);
   linearGradient.addColorStop(1, compColor);
