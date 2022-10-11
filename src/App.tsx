@@ -17,7 +17,7 @@ const addLogo = (context: CanvasRenderingContext2D) => {
     const canvasWidth = context.canvas.width;
     const canvasHeight = context.canvas.height;
 
-    context.drawImage(logo, canvasWidth - logoWidth - 12, canvasHeight - logoHeight - 12, logoWidth, logoHeight);
+    context.drawImage(logo, canvasWidth / 2 - logoWidth / 2, canvasHeight - logoHeight - 12, logoWidth, logoHeight);
   };
 };
 
