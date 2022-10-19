@@ -34,8 +34,10 @@ const generateBackground = (
 
   const colorCheckbox = document.getElementById('keepColor') as HTMLInputElement;
   const seedCheckbox = document.getElementById('keepSeed') as HTMLInputElement;
+  const squareCheckbox = document.getElementById('squarePattern') as HTMLInputElement;
   const keepColor = colorCheckbox ? colorCheckbox.checked : false;
   const keepSeed = seedCheckbox ? seedCheckbox.checked : false;
+  const squarePattern = !(squareCheckbox ? squareCheckbox.checked : false);
 
   const bgColor = keepColor ? currentColor : tinycolor2.random();
   setCurrentColor(bgColor);
@@ -60,7 +62,15 @@ const generateBackground = (
       const y = (canvas.height * j) / 12 + canvas.height / (2 * bgRows);
       const radius = (1.5 * bgCols) * Math.abs(noise(x / 1000, y / 1000));
       context.beginPath();
-      context.arc(x, y, radius, 0, 2 * Math.PI);
+      if (squarePattern) {
+        context.arc(x, y, radius, 0, 2 * Math.PI);
+      } else {
+        context.moveTo(x - radius / 1.5, y - radius / 1.5); // Move to the top left tip of the square
+        context.lineTo(x + radius / 1.5, y - radius / 1.5); // Line to the top right tip
+        context.lineTo(x + radius / 1.5, y + radius / 1.5); // Line to the bottom right tip
+        context.lineTo(x - radius / 1.5, y + radius / 1.5); // Line to the bottom left tip
+        context.closePath();
+      }
       context.fill();
     }
   }
@@ -198,6 +208,16 @@ const App = () => {
                   className="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
                 <span className="ml-2 text-sm font-medium text-gray-900">Conserva patró</span>
+              </div>
+              <div>
+                <input
+                  id="squarePattern"
+                  type="checkbox"
+                  value=""
+            // eslint-disable-next-line max-len
+                  className="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <span className="ml-2 text-sm font-medium text-gray-900">Quadrats</span>
               </div>
             </div>
           ) : <div />}
