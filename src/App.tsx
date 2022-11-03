@@ -95,7 +95,7 @@ const reduceTextWidth = (videoTitle: string, context: CanvasRenderingContext2D):
   return splitText;
 };
 
-const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, canvas: HTMLCanvasElement, color: string) => {
+const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, videoSubtitle: string, canvas: HTMLCanvasElement, color: string) => {
   if (!videoTitle) { return; }
 
   const { width, height } = canvas;
@@ -103,28 +103,44 @@ const writeTitle = (context: CanvasRenderingContext2D, videoTitle: string, canva
   context.font = '72px Tahoma, Verdana, Segoe, sans-serif';
 
   const reducedText = reduceTextWidth(videoTitle, context);
-  const textHeight = 72 + 72 * (reducedText.match(/\n/g) || []).length;
+  const numLF = (reducedText.match(/\n/g) || []).length; // Nombre de salts de línia (Line Feed)
+  const titleHeigth = 72 + 72 * numLF;
+  const subtitleHeigth = 72;
   const splitText = reducedText.split('\n');
-  const textWidth = Math.max(context.measureText(splitText[0]).width, context.measureText(splitText[1]).width);
+  const titleWidth = Math.max(context.measureText(splitText[0]).width, context.measureText(splitText[1]).width);
+  const subtitleWidth = context.measureText(videoSubtitle).width;
 
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
-  if (splitText.length === 1) {
-    roundRect(context, (width / 2) - textWidth / 2 - 20, height / 2 - textHeight, textWidth + 40, 2 * textHeight, 24);
+  if (numLF !== 1) {
+    roundRect(context, (width / 2) - titleWidth / 2 - 20, height / 2 - titleHeigth * 2, titleWidth + 40, 2 * titleHeigth, 24);
     context.fillStyle = color;
-    context.fillText(videoTitle, 1280 / 2, 720 / 2, 1280);
+    context.fillText(videoTitle, 1280 / 2, 720 / 2 - titleHeigth, 1280);
+    if (videoSubtitle !== '') {
+      context.fillStyle = 'white';
+      roundRect(context, (width / 2) - subtitleWidth / 2 - 20, 0.7 * height - 1.75 * subtitleHeigth, subtitleWidth + 40, 1.5 * subtitleHeigth, 24);
+      context.fillStyle = color;
+      context.fillText(videoSubtitle, 1280 / 2, 0.7 * 720 - subtitleHeigth, 1280);
+    }
   } else {
-    roundRect(context, (width / 2) - textWidth / 2 - 20, height / 2 - textHeight, textWidth + 40, 1.5 * textHeight, 24);
+    roundRect(context, (width / 2) - titleWidth / 2 - 20, height / 2 - titleHeigth - titleHeigth / 2, titleWidth + 40, 1.5 * titleHeigth, 24);
     splitText.forEach((s, index) => {
       context.fillStyle = color;
-      context.fillText(s, 1280 / 2, ((720 / 2) + (index * textHeight) / 2) - (textHeight / 2), 1280);
+      context.fillText(s, 1280 / 2, ((720 / 2) + (index * titleHeigth) / 2) - titleHeigth, 1280);
     });
+    if (videoSubtitle !== '') {
+      context.fillStyle = 'white';
+      roundRect(context, (width / 2) - subtitleWidth / 2 - 20, 0.7 * height - 0.75 * subtitleHeigth - subtitleHeigth / 2, subtitleWidth + 40, 1.5 * subtitleHeigth, 24);
+      context.fillStyle = color;
+      context.fillText(videoSubtitle, 1280 / 2, 0.7 * 720 - subtitleHeigth / 2, 1280);
+    }
   }
 };
 
 const generateImages = (
   videoTitle: string,
+  videoSubtitle: string,
   currentColor: string,
   setCurrentColor: React.Dispatch<React.SetStateAction<string>>,
   currentSeed: number,
@@ -137,7 +153,7 @@ const generateImages = (
   const context = canvas.getContext('2d');
 
   const color = generateBackground(context!, canvas, currentColor, setCurrentColor, currentSeed, setCurrentSeed);
-  writeTitle(context!, videoTitle, canvas, color);
+  writeTitle(context!, videoTitle, videoSubtitle, canvas, color);
   addLogo(context!);
 };
 
@@ -151,7 +167,8 @@ const handleClick = (
 ) => {
   e.preventDefault();
   const videoTitle = (document.querySelector('#videoTitle') as HTMLInputElement).value;
-  generateImages(videoTitle, currentColor, setCurrentColor, currentSeed, setCurrentSeed);
+  const videoSubtitle = (document.querySelector('#videoSubtitle') as HTMLInputElement).value;
+  generateImages(videoTitle, videoSubtitle, currentColor, setCurrentColor, currentSeed, setCurrentSeed);
   setImageGenerated(true);
 };
 
@@ -178,6 +195,13 @@ const App = () => {
           // eslint-disable-next-line max-len
             className="w-96 bg-gray-50 border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
             placeholder="Títol del vídeo"
+          />
+          <input
+            type="text"
+            id="videoSubtitle"
+          // eslint-disable-next-line max-len
+            className="w-96 bg-gray-50 border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+            placeholder="Subtítol del vídeo"
           />
           <button
             type="submit"
